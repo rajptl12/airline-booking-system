@@ -15,6 +15,7 @@ export default function Home() {
   const [toValue, setToValue] = useState("");
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
+  const [travelClass, setTravelClass] = useState("Economy");
 
   useEffect(() => {
     const handleClick = () => setActiveField("");
@@ -24,14 +25,14 @@ export default function Home() {
 
   const handleSearch = () => {
     if (activeTab === "flight") {
-      router.push(`/search?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue || "Anywhere")}`);
+      router.push(`/search?from=${encodeURIComponent(fromValue)}&to=${encodeURIComponent(toValue || "Anywhere")}&adults=${adults}&children=${children}&class=${encodeURIComponent(travelClass)}&date=Oct 15 - Oct 22`);
     } else {
-      router.push(`/search?type=hotel&to=${encodeURIComponent(toValue || "Anywhere")}`);
+      router.push(`/search?type=hotel&to=${encodeURIComponent(toValue || "Anywhere")}&adults=${adults}&children=${children}`);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-600 selection:text-white pb-10">
+    <div className="min-h-screen bg-slate-50 font-sans selection:bg-blue-600 selection:text-white pb-24 md:pb-10">
       {/* Navigation */}
       <nav className={`fixed top-0 w-full z-[100] transition-all duration-300 ${isMenuOpen ? "bg-white" : "bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm"}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -53,10 +54,16 @@ export default function Home() {
             </div>
 
             <div className="hidden md:flex items-center gap-4">
-              <button className="px-5 py-2.5 text-slate-700 font-bold hover:bg-slate-100 rounded-full transition-colors">
+              <button 
+                onClick={() => router.push('/login')}
+                className="px-5 py-2.5 text-slate-700 font-bold hover:bg-slate-100 rounded-full transition-colors"
+              >
                 Sign In
               </button>
-              <button className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full hover:shadow-lg hover:shadow-blue-500/40 transition-all active:scale-95">
+              <button 
+                onClick={() => router.push('/signup')}
+                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full hover:shadow-lg hover:shadow-blue-500/40 transition-all active:scale-95"
+              >
                 Sign Up
               </button>
             </div>
@@ -80,10 +87,16 @@ export default function Home() {
           <a href="#destinations" onClick={() => setIsMenuOpen(false)} className="pb-4 border-b border-slate-100 flex justify-between items-center group"><span className="group-hover:text-blue-600 transition-colors">Destinations</span> <ArrowRight className="w-5 h-5 text-slate-300 group-hover:text-blue-600" /></a>
         </div>
         <div className="mt-8 flex flex-col gap-4">
-          <button onClick={() => setIsMenuOpen(false)} className="w-full py-4 text-slate-700 font-bold bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors text-lg">
+          <button 
+            onClick={() => { setIsMenuOpen(false); router.push('/login'); }} 
+            className="w-full py-4 text-slate-700 font-bold bg-slate-50 rounded-2xl hover:bg-slate-100 transition-colors text-lg"
+          >
             Sign In
           </button>
-          <button onClick={() => setIsMenuOpen(false)} className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-blue-500/30 transition-all active:scale-95 text-lg">
+          <button 
+            onClick={() => { setIsMenuOpen(false); router.push('/signup'); }} 
+            className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-blue-500/30 transition-all active:scale-95 text-lg"
+          >
             Sign Up
           </button>
         </div>
@@ -118,25 +131,44 @@ export default function Home() {
           <div className="max-w-6xl mx-auto px-2 sm:px-0">
             <div className="bg-white/95 backdrop-blur-2xl rounded-[2rem] p-4 md:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border border-white/40 relative">
               {/* Tabs */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-4">
                 <button 
                   onClick={() => setActiveTab("flight")}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "flight" ? "bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-105" : "text-slate-600 hover:bg-slate-100"}`}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "flight" ? "bg-blue-600 text-white shadow-md shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100"}`}
                 >
                   <PlaneTakeoff className="w-5 h-5" />
-                  Flight
+                  Book Flight
                 </button>
                 <button 
                   onClick={() => setActiveTab("hotel")}
-                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "hotel" ? "bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-105" : "text-slate-600 hover:bg-slate-100"}`}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "hotel" ? "bg-blue-600 text-white shadow-md shadow-blue-600/20" : "text-slate-600 hover:bg-slate-100"}`}
                 >
                   <Heart className="w-5 h-5" />
-                  Hotel
+                  Stays
+                </button>
+                <div className="w-px h-10 bg-slate-200 hidden md:block mx-2"></div>
+                <button 
+                  onClick={() => setActiveTab("manage")}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "manage" ? "bg-slate-900 text-white shadow-md shadow-slate-900/20" : "text-slate-600 hover:bg-slate-100"}`}
+                >
+                  Manage Booking
+                </button>
+                <button 
+                  onClick={() => setActiveTab("checkin")}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "checkin" ? "bg-slate-900 text-white shadow-md shadow-slate-900/20" : "text-slate-600 hover:bg-slate-100"}`}
+                >
+                  Check-in
+                </button>
+                <button 
+                  onClick={() => setActiveTab("status")}
+                  className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold transition-all duration-300 ${activeTab === "status" ? "bg-slate-900 text-white shadow-md shadow-slate-900/20" : "text-slate-600 hover:bg-slate-100"}`}
+                >
+                  Flight Status
                 </button>
               </div>
 
               {/* Trip Type */}
-              {activeTab === "flight" && (
+              {(activeTab === "flight" || activeTab === "hotel") && (
                 <div className="flex gap-6 mb-4 pl-2">
                   <label className="flex items-center gap-2 cursor-pointer group">
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${tripType === "round" ? "border-blue-600" : "border-slate-300 group-hover:border-blue-400"}`}>
@@ -156,10 +188,11 @@ export default function Home() {
               )}
 
               {/* Search Inputs */}
-              <div className="flex flex-col lg:flex-row gap-2 lg:gap-0 lg:border lg:border-slate-200 lg:rounded-full bg-transparent lg:bg-slate-50/50 p-1 relative shadow-sm">
-                
-                {/* From Component */}
-                {activeTab === "flight" && (
+              {(activeTab === "flight" || activeTab === "hotel") ? (
+                <div className="flex flex-col lg:flex-row gap-2 lg:gap-0 lg:border lg:border-slate-200 lg:rounded-full bg-transparent lg:bg-slate-50/50 p-1 relative shadow-sm">
+                  
+                  {/* From Component */}
+                  {activeTab === "flight" && (
                   <>
                     <div 
                       onClick={(e) => { e.stopPropagation(); setActiveField("from"); }}
@@ -255,10 +288,23 @@ export default function Home() {
 
                   {activeField === "dates" && (
                     <div className="absolute top-[110%] left-1/2 -translate-x-1/2 md:translate-x-0 md:left-0 w-[90vw] md:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 z-50 animate-in fade-in zoom-in-95 duration-200 text-center">
-                      <CalendarDays className="w-12 h-12 text-purple-100 mx-auto mb-3" />
-                      <div className="text-slate-800 font-bold mb-1">Select your dates</div>
-                      <div className="text-slate-500 text-sm mb-4">Interactive calendar simulation</div>
-                      <button onClick={(e) => { e.stopPropagation(); setActiveField(""); }} className="bg-purple-50 text-purple-600 font-bold w-full py-3 rounded-xl hover:bg-purple-100 transition-colors">Confirm Dates</button>
+                      <div className="flex justify-between items-center mb-4">
+                        <button className="p-2 hover:bg-slate-100 rounded-full">&lt;</button>
+                        <div className="font-bold text-slate-800">October 2026</div>
+                        <button className="p-2 hover:bg-slate-100 rounded-full">&gt;</button>
+                      </div>
+                      <div className="grid grid-cols-7 gap-1 mb-4 text-sm">
+                        {['Su','Mo','Tu','We','Th','Fr','Sa'].map(d => <div key={d} className="text-slate-400 font-bold py-1">{d}</div>)}
+                        {Array.from({length: 31}).map((_, i) => (
+                          <div 
+                            key={i} 
+                            className={`py-2 rounded-full cursor-pointer font-medium ${i+1 === 15 ? 'bg-purple-600 text-white shadow-md' : i+1 > 15 && i+1 <= 22 ? 'bg-purple-100 text-purple-800' : i+1 === 22 ? 'bg-purple-600 text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'}`}
+                          >
+                            {i + 1}
+                          </div>
+                        ))}
+                      </div>
+                      <button onClick={(e) => { e.stopPropagation(); setActiveField(""); }} className="bg-purple-50 text-purple-600 font-bold w-full py-3 rounded-xl hover:bg-purple-100 transition-colors shadow-sm">Confirm Dates</button>
                     </div>
                   )}
                 </div>
@@ -275,7 +321,7 @@ export default function Home() {
                     <div className={`p-2 rounded-full lg:hidden transition-colors ${activeField === "who" ? "bg-teal-600 text-white" : "bg-teal-50 text-teal-600"}`}><Users className="w-5 h-5" /></div>
                     <div>
                       <div className="text-slate-900 font-black text-lg p-0 m-0 leading-tight">{adults + children} Passenger{adults + children !== 1 ? 's' : ''}</div>
-                      <div className="text-slate-500 text-sm font-medium mt-1">Economy</div>
+                      <div className="text-slate-500 text-sm font-medium mt-1">{travelClass}</div>
                     </div>
                   </div>
 
@@ -303,19 +349,53 @@ export default function Home() {
                           <button onClick={(e) => { e.stopPropagation(); setChildren(children + 1); }} className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-400 hover:text-slate-600 transition-colors">+</button>
                         </div>
                       </div>
+
+                      <div className="mb-6 pt-4 border-t border-slate-100">
+                        <div className="font-bold text-slate-800 mb-3">Cabin Class</div>
+                        <div className="flex gap-2">
+                          {["Economy", "Business", "First"].map(cls => (
+                            <button 
+                              key={cls}
+                              onClick={(e) => { e.stopPropagation(); setTravelClass(cls); }}
+                              className={`flex-1 py-2 rounded-xl text-sm font-bold transition-colors ${travelClass === cls ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+                            >
+                              {cls}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
                       <button onClick={(e) => { e.stopPropagation(); setActiveField(""); }} className="bg-teal-600 text-white font-bold w-full py-3 rounded-xl hover:bg-teal-700 transition-colors shadow-lg shadow-teal-600/20 mt-2">Apply</button>
                     </div>
                   )}
                 </div>
 
-                {/* Submit Button */}
-                <div className="mt-4 lg:mt-0 lg:absolute lg:right-3 lg:top-1/2 lg:-translate-y-1/2 flex h-full items-center z-30 pointer-events-none">
-                  <button onClick={handleSearch} className="pointer-events-auto w-full lg:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white lg:p-5 px-8 py-4 rounded-full font-bold text-lg shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:bg-blue-600 hover:shadow-blue-500/40 transition-all hover:scale-105 active:scale-95 group">
-                    <Search className="w-6 h-6 group-hover:animate-pulse" />
-                    <span className="lg:hidden tracking-wide text-center w-full">{activeTab === "flight" ? "Search Flights" : "Search Hotels"}</span>
-                  </button>
+                  {/* Submit Button */}
+                  <div className="mt-4 lg:mt-0 lg:absolute lg:right-3 lg:top-1/2 lg:-translate-y-1/2 flex h-full items-center z-30 pointer-events-none">
+                    <button onClick={handleSearch} className="pointer-events-auto w-full lg:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white lg:p-5 px-8 py-4 rounded-full font-bold text-lg shadow-[0_10px_20px_rgba(37,99,235,0.3)] hover:bg-blue-700 hover:shadow-blue-600/40 transition-all hover:scale-105 active:scale-95 group">
+                      <Search className="w-6 h-6 group-hover:animate-pulse" />
+                      <span className="lg:hidden tracking-wide text-center w-full">{activeTab === "flight" ? "Search Flights" : "Search Hotels"}</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col lg:flex-row gap-4">
+                  <div className="flex-1">
+                    <label className="text-xs font-black uppercase tracking-widest mb-2 block pl-1 text-slate-500">Booking Reference / PNR</label>
+                    <input type="text" placeholder="e.g. ABCDEF" className="w-full text-slate-900 font-black text-lg bg-slate-50 border border-slate-200 rounded-2xl outline-none p-4 focus:ring-2 focus:ring-blue-600 placeholder-slate-400 uppercase" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-xs font-black uppercase tracking-widest mb-2 block pl-1 text-slate-500">Last Name</label>
+                    <input type="text" placeholder="Passenger Last Name" className="w-full text-slate-900 font-black text-lg bg-slate-50 border border-slate-200 rounded-2xl outline-none p-4 focus:ring-2 focus:ring-blue-600 placeholder-slate-400" />
+                  </div>
+                  <div className="flex h-full items-end pt-6 lg:pt-0">
+                    <button className="w-full lg:w-auto flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:bg-blue-600 transition-all active:scale-95 group">
+                      <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                      <span>{activeTab === "checkin" ? "Check In" : activeTab === "manage" ? "Find Booking" : "Check Status"}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -332,7 +412,13 @@ export default function Home() {
               </h2>
               <p className="text-slate-500">Grab the best deals before they're gone</p>
             </div>
-            <button className="hidden md:flex text-blue-600 font-semibold hover:text-blue-700 items-center gap-2 group text-sm">
+            <button 
+              onClick={() => {
+                document.getElementById('search')?.scrollIntoView({ behavior: 'smooth' });
+                setActiveTab('hotel');
+              }}
+              className="hidden md:flex text-blue-600 font-semibold hover:text-blue-700 items-center gap-2 group text-sm"
+            >
               View all offers
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -389,7 +475,14 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Popular Destinations</h2>
               <p className="text-slate-500 text-lg">Unleash your wanderlust with our top picks</p>
             </div>
-            <button className="mt-4 md:mt-0 text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2 group">
+            <button 
+              onClick={() => {
+                document.getElementById('search')?.scrollIntoView({ behavior: 'smooth' });
+                setActiveTab('flight');
+                setTimeout(() => setActiveField('to'), 500);
+              }}
+              className="mt-4 md:mt-0 text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2 group"
+            >
               See all destinations
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </button>
@@ -489,20 +582,20 @@ export default function Home() {
             <div>
               <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Company</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="hover:text-blue-400 transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Press & Media</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Contact</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">About Us</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Careers</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Press & Media</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Contact</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">Resources</h4>
               <ul className="space-y-4">
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Cancellation Options</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Travel Guides</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Help Center</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Cancellation Options</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Travel Guides</a></li>
+                <li><a href="#" onClick={e => e.preventDefault()} className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
               </ul>
             </div>
 
@@ -521,9 +614,9 @@ export default function Home() {
           <div className="border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-500 text-sm">© 2026 AeroBooking by Raj Patel. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#" className="text-slate-500 hover:text-white transition-colors">Twitter</a>
-              <a href="#" className="text-slate-500 hover:text-white transition-colors">Facebook</a>
-              <a href="#" className="text-slate-500 hover:text-white transition-colors">Instagram</a>
+              <a href="#" onClick={e => e.preventDefault()} className="text-slate-500 hover:text-white transition-colors">Twitter</a>
+              <a href="#" onClick={e => e.preventDefault()} className="text-slate-500 hover:text-white transition-colors">Facebook</a>
+              <a href="#" onClick={e => e.preventDefault()} className="text-slate-500 hover:text-white transition-colors">Instagram</a>
             </div>
           </div>
         </div>
